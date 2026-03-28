@@ -1,0 +1,107 @@
+DRAGON.CS
+
+using System;
+
+public class Goblin : Enemy
+{
+    private int stealthLevel;
+    private bool isSneaking;
+    
+    public int StealthLevel 
+    { 
+        get { return stealthLevel; } 
+        private set { stealthLevel = Math.Min(5, Math.Max(1, value)); } 
+    }
+    
+    public bool IsSneaking 
+    { 
+        get { return isSneaking; } 
+        private set { isSneaking = value; } 
+    }
+    
+    public Goblin() : base("Goblin", 60, 12, 3, "Sneaky Thief", 50)
+    {
+        stealthLevel = 3;
+        isSneaking = false;
+    }
+    
+    // Sneak attack ability
+    public int SneakAttack()
+    {
+        Random random = new Random();
+        int bonusDamage = stealthLevel * random.Next(1, 4);
+        int totalDamage = Attack + bonusDamage;
+        
+        Console.WriteLine($"👤 {Name} uses SNEAK ATTACK! +{bonusDamage} bonus damage!");
+        isSneaking = true;
+        
+        return totalDamage;
+    }
+    
+    // Regular attack
+    public int RegularAttack()
+    {
+        Random random = new Random();
+        int damage = Attack + random.Next(-2, 4);
+        return Math.Max(1, damage);
+    }
+    
+    // Override DecideAction
+    public override int DecideAction()
+    {
+        Random random = new Random();
+        
+        // 33% chance for sneak attack
+        if (random.Next(1, 4) == 1)
+        {
+            return SneakAttack();
+        }
+        
+        return RegularAttack();
+    }
+    
+    // Override UseSpecialAbility
+    public override void UseSpecialAbility(Character target)
+    {
+        Console.WriteLine($"👤 {Name} disappears into the shadows...");
+        int damage = SneakAttack();
+        target.TakeDamage(damage);
+        isSneaking = false;
+    }
+    
+    // Override TakeDamage with stealth mechanic
+    public override void TakeDamage(int damage)
+    {
+        if (isSneaking)
+        {
+            int reducedDamage = Math.Max(1, damage / 2);
+            Console.WriteLine($"🛡️ Stealth reduces damage from {damage} to {reducedDamage}!");
+            base.TakeDamage(reducedDamage);
+            isSneaking = false;
+        }
+        else
+        {
+            base.TakeDamage(damage);
+        }
+    }
+    
+    // Override PerformAction
+    public override void PerformAction()
+    {
+        Random random = new Random();
+        if (random.Next(1, 4) == 1)
+        {
+            Console.WriteLine($"{Name} giggles maniacally and hides in the shadows!");
+        }
+        else
+        {
+            Console.WriteLine($"{Name} dances around with its dagger!");
+        }
+    }
+    
+    // Override GetCharacterType
+    public override string GetCharacterType()
+    {
+        return "Goblin";
+    }
+}
