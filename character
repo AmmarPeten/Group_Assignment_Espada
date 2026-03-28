@@ -1,0 +1,114 @@
+PLAYER.CS
+using System;
+using System.Collections.Generic;
+
+public class Player : Character
+{
+    // Private fields for player-specific data
+    private int level;
+    private int experience;
+    private int experienceToNextLevel;
+    private Inventory inventory;
+    
+    // Properties
+    public int Level 
+    { 
+        get { return level; } 
+        private set { level = value; } 
+    }
+    
+    public int Experience 
+    { 
+        get { return experience; } 
+        private set { experience = value; } 
+    }
+    
+    public int ExperienceToNextLevel 
+    { 
+        get { return experienceToNextLevel; } 
+    }
+    
+    public Inventory Inventory 
+    { 
+        get { return inventory; } 
+    }
+    
+    // Constructor
+    public Player(string name) : base(name, 100, 15, 5)
+    {
+        level = 1;
+        experience = 0;
+        experienceToNextLevel = 100;
+        inventory = new Inventory();
+        
+        // Starting items
+        inventory.AddItem(new HealthPotion());
+        inventory.AddItem(new HealthPotion());
+    }
+    
+    // Gain experience and level up
+    public void GainExperience(int amount)
+    {
+        experience += amount;
+        Console.WriteLine($"\n✨ Gained {amount} XP! (Total: {experience}/{experienceToNextLevel})");
+        
+        while (experience >= experienceToNextLevel)
+        {
+            LevelUp();
+        }
+    }
+    
+    // Level up method
+    private void LevelUp()
+    {
+        level++;
+        experience -= experienceToNextLevel;
+        experienceToNextLevel = (int)(experienceToNextLevel * 1.2);
+        
+        // Increase stats
+        MaxHealth += 20;
+        Health = MaxHealth;
+        Attack += 5;
+        Defense += 3;
+        
+        Console.WriteLine($"\n🎉🎉🎉 LEVEL UP! Now Level {level}! 🎉🎉🎉");
+        Console.WriteLine($"Max HP: {MaxHealth} (+20)");
+        Console.WriteLine($"Attack: {Attack} (+5)");
+        Console.WriteLine($"Defense: {Defense} (+3)");
+    }
+    
+    // Calculate damage with variation
+    public int CalculateDamage()
+    {
+        Random random = new Random();
+        int damage = Attack + random.Next(-2, 5);
+        return Math.Max(1, damage);
+    }
+    
+    // Override PerformAction
+    public override void PerformAction()
+    {
+        Console.WriteLine($"{Name} stands ready for battle!");
+    }
+    
+    // Override GetCharacterType
+    public override string GetCharacterType()
+    {
+        return "Hero";
+    }
+    
+    // Override DisplayStats to show more info
+    public override void DisplayStats()
+    {
+        Console.WriteLine("\n========== PLAYER STATS ==========");
+        Console.WriteLine($"Name: {Name}");
+        Console.WriteLine($"Level: {level}");
+        Console.WriteLine($"Type: {GetCharacterType()}");
+        Console.WriteLine($"HP: {Health}/{MaxHealth}");
+        Console.WriteLine($"XP: {experience}/{experienceToNextLevel}");
+        Console.WriteLine($"ATK: {Attack}");
+        Console.WriteLine($"DEF: {Defense}");
+        Console.WriteLine($"Inventory: {inventory.GetItems().Count} items");
+        Console.WriteLine("===================================");
+    }
+}
