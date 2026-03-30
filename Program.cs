@@ -145,7 +145,6 @@ namespace TextRPG
 
         public virtual void Apply(Character target)
         {
-            // Base behavior does nothing
         }
     }
 
@@ -269,7 +268,7 @@ namespace TextRPG
                     }
 
                     Action playerAction = new Action();
-                    Character actionTarget = currentEnemy; // default target
+                    Character actionTarget = currentEnemy; 
 
                     if (choice == "1")
                     {
@@ -279,7 +278,7 @@ namespace TextRPG
                     else if (choice == "2")
                     {
                         playerAction = new DefendAction();
-                        actionTarget = player; // Player uses Defend on themselves
+                        actionTarget = player; 
                     }
                     else if (choice == "3")
                     {
@@ -317,11 +316,11 @@ namespace TextRPG
 
                     Console.WriteLine("─────────────────────────────────────────");
 
-                    // Enemy Turn (if still alive)
+
                     if (currentEnemy.Health > 0)
                     {
                         Console.WriteLine("--- " + currentEnemy.Name + "'s Turn ---");
-                        // Enemies just attack
+
                         Action enemyAction = new AttackAction(currentEnemy);
                         enemyAction.Execute(player);
                     }
